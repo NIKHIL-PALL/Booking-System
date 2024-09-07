@@ -4,7 +4,7 @@ const Availability = require('../model/Availability');
 const getSlotsByUserId = async(req, res) => {
     const {userId}  = req.params;
     try{
-        const slots = await Availability.findOne({userId});
+        const slots = await Availability.find({userId});
         if(!slots) {
             return res.status(404).json({message : "No slots are available"});
         }
@@ -19,7 +19,8 @@ const getSlotsByUserId = async(req, res) => {
 }
 
 const createSlot = async(req, res) => {
-    const {userId, day, slots} = req.body;
+    const {userId} = res.locals;
+    const {day, slots} = req.body;
     try{
 
         const existingSlots = await Availability.findOne({userId, day});
@@ -41,7 +42,8 @@ const createSlot = async(req, res) => {
 }
 
 const updateSlotTime = async (req, res) => {
-    const {userId,index, newStart, newEnd} = req.body;
+    const {userId} = res.locals;
+    const {index, newStart, newEnd} = req.body;
     try{
         const availability = await Availability.findOne({userId});
         if(!availability) {
@@ -61,7 +63,8 @@ const updateSlotTime = async (req, res) => {
 }
 
 const deleteSlotByIndex = async(req, res) => {
-    const {userId, index} = req.params;
+    const {userId} = res.locals;
+    const {index} = req.params;
 
     try{
         const slotIndex = parseInt(index);

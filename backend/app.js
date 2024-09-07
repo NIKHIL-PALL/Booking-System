@@ -3,6 +3,7 @@ const dotEnv = require("dotenv");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/UserRoutes")
 const slotRoutes = require("./routes/SlotRoutes")
+const SessionRoutes = require("./routes/SessionRoutes")
 const app = express();
 
 dotEnv.config();
@@ -10,6 +11,7 @@ app.use(express.json())
 
 app.use("/api/user/", userRoutes);
 app.use("/api/slot/", slotRoutes);
+app.use("/api/session/", SessionRoutes);
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
