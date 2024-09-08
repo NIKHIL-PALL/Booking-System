@@ -6,10 +6,7 @@ const SessionSchema = new mongoose.Schema({
     required: true,
   },
   participants: [
-    {
-      email: { type: String, required: true },
-      name: { type: String, required: true },
-    },
+    { type: mongoose.Schema.Types.ObjectId, ref: "User"  },
   ],
   start: {
     type: String,
@@ -21,6 +18,6 @@ const SessionSchema = new mongoose.Schema({
   },
 });
 
-const sessionSchema = mongoose.model('Session', SessionSchema);
+const session = mongoose.model("Session", SessionSchema);
 
-module.exports = sessionSchema;
+module.exports = session;
