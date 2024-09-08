@@ -59,21 +59,28 @@ The frontend is developed using **React.js** with **TailwindCSS** for styling. I
    git clone https://github.com/your-repo-url.git
    cd your-repo-url/backend
 2. **Install Dependecies** :
+    ```bash
     npm install
 3. **Create a .env file in the backend folder and configure the following environment variables**:
-    MONGO_URI=mongodb://localhost:27017/your-database-name
-    ACCESS_TOKEN_SECRET=your-jwt-secret
+    ```bash
+    MONGO_URL=mongodb://localhost:27017/your-database-name
+    ACCESS_TOKEN=your-jwt-secret
     PORT=5000
+    USER = user
 4. **Run the backend server**:
+    ```bash
     npm run dev
 
 ## Frontend Setup
 
 1. **Navigate to the frontend folder**:
+    ```bash
     cd ../frontend
 2. **Install dependencies** :
+    ```bash
     npm install
 3. **Run the frontend**:
+    ```bash
     npm run start
 
     The frontend will run on http://localhost:3000
@@ -82,22 +89,22 @@ The frontend is developed using **React.js** with **TailwindCSS** for styling. I
 The API follows RESTful principles and uses the following key endpoints:
 
 1. **User/Admin APIs**:
-
-GET /api/user/ : get all users
-GET /api/user/:userId : get user by userId
-POST /api/user/signup: Register a new user.
-POST /api/user/login: Log in a user and receive a JWT token.
+    ```bash
+    GET /api/user/ : get all users
+    GET /api/user/:userId : get user by userId
+    POST /api/user/signup: Register a new user.
+    POST /api/user/login: Log in a user and receive a JWT token.
 2. **Session APIs**:
-
-GET /api/session/ : get all sessions 
-GET /api/session/:userId: Get all sessions for a user.
-GET /api/session/:sessionId: Get a session by sessionId
-POST /api/session/: Create a new session.
-POST /api/session/addUser: Add a new user to the session
-DELETE /api/session/delete/:sessionId : Delete session by sessionId
+    ```bash
+    GET /api/session/ : get all sessions 
+    GET /api/session/:userId: Get all sessions for a user.
+    GET /api/session/:sessionId: Get a session by sessionId
+    POST /api/session/: Create a new session.
+    POST /api/session/addUser: Add a new user to the session
+    DELETE /api/session/delete/:sessionId : Delete session by sessionId
 3. **Availability APIs**:
-
-GET /api/slot/:userId: Get availability slots for a user.
-POST /api/slot/create: Create new availability slots for a user.
-PATCH /api/slot/: Update slot
-DELETE /api/slot/index: Delete a specific availability slot.
+    ```bash
+    GET /api/slot/:userId: Get availability slots for a user.
+    POST /api/slot/create: Create new availability slots for a user.
+    PATCH /api/slot/: Update slot
+    DELETE /api/slot/index: Delete a specific availability slot.
