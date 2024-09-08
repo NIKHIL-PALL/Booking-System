@@ -12,7 +12,7 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "Email not found" });
+      return res.status(404).json({ message: "User not found" });
     }
     if (user.password === password) {
       const payload = {
@@ -53,7 +53,7 @@ const signup = async (req, res) => {
     const newUser = await User({ name, email, password, role });
     newUser.save();
 
-    return res.status(201).json(newUser);
+    return res.status(201).json({message : "Successfully signed up."});
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

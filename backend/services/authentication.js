@@ -9,6 +9,7 @@ const authenticateToken = (req, res, next) => {
 
     const token = authHeader && authHeader.split(' ')[1];
     if(token === undefined) {
+        console.log("autehfj")
         return res.sendStatus(401);
     }
     else{
@@ -16,9 +17,14 @@ const authenticateToken = (req, res, next) => {
             if(err) {
                 return res.sendStatus(403);
             }
+            else{
 
-            res.locals = resp;
-            next();
+                res.locals = resp;
+                console.log("_________________")
+                console.log(resp)
+                next();
+            }
+
         })
     }
 }

@@ -4,10 +4,15 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/UserRoutes")
 const slotRoutes = require("./routes/SlotRoutes")
 const SessionRoutes = require("./routes/SessionRoutes")
+const cors = require("cors")
 const app = express();
 
 dotEnv.config();
+
+app.use(cors());
+app.use(express.urlencoded({extended : true}));
 app.use(express.json())
+
 
 app.use("/api/user/", userRoutes);
 app.use("/api/slot/", slotRoutes);
