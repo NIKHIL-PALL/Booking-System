@@ -56,8 +56,8 @@ The frontend is developed using **React.js** with **TailwindCSS** for styling. I
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-repo-url.git
-   cd your-repo-url/backend
+   git clone https://github.com/NIKHIL-PALL/Booking-System.git
+   cd Booking-System/backend
 2. **Install Dependecies** :
     ```bash
     npm install
