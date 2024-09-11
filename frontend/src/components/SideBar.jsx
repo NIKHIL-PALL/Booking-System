@@ -50,18 +50,19 @@ function SideBar() {
             </Link>
           </li>
           <li>
-            <Link
+            {!auth.isAdmin && <Link
               to="user-availability"
               onClick={(e) => handleSideBarClick(3)}
               className={`block px-6 py-2 ${
                 isActive === 3 ? "bg-blue-500 text-white" : "text-gray-700 "
               }  hover:bg-blue-500 hover:text-white rounded-lg`}
             >
-              Available Slots
-            </Link>
+              Set Slots
+            </Link>}
+            
           </li>
           <li>
-            <Link
+            {!auth.isAdmin && <Link
               to="user-slots"
               onClick={(e) => handleSideBarClick(4)}
               className={`block px-6 py-2 ${
@@ -69,7 +70,7 @@ function SideBar() {
               }  hover:bg-blue-500 hover:text-white rounded-lg`}
             >
               My Slots
-            </Link>
+            </Link>}
           </li>
           <li>
             <Link
@@ -87,7 +88,7 @@ function SideBar() {
               to="/"
               onClick={(e) => {auth.logout(); navigate("/")}}
               className={`block px-6 py-2 ${
-                isActive === 4 ? "bg-blue-500 text-white" : "text-gray-700 "
+                isActive === 6 ? "bg-blue-500 text-white" : "text-gray-700 "
               }  hover:bg-blue-500 hover:text-white rounded-lg`}
             >
               Logout

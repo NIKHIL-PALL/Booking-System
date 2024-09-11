@@ -10,6 +10,6 @@ const router = express.Router();
 router.get('/:userId', authenticateToken, allowAdminOrOwnUser, SlotController.getSlotsByUserId);
 router.post('/createSlot', authenticateToken, SlotController.createSlot);
 router.patch('/updateSlotTime', authenticateToken, SlotController.updateSlotTime);
-router.delete('/:index', authenticateToken, SlotController.deleteSlotByIndex);
+router.delete('/:slotId/:slotDay', authenticateToken, SlotController.deleteSlotById);
 
 module.exports = router;

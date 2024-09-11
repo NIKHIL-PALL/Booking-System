@@ -18,6 +18,7 @@ function App() {
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [type, setType] = useState("");
   const onClose = () => {
     setIsOpen(false);
@@ -26,11 +27,12 @@ function App() {
   const onConfirm = () => {
     setIsOpen(false);
   };
-  const login = (token, name) => {
+  const login = (token, admin, name) => {
     localStorage.setItem("token", token);
     setIsLoggedIn(true);
     setName(name);
     setUserToken(token);
+    setIsAdmin(admin);
   };
   const logout = () => {
 
@@ -58,6 +60,8 @@ function App() {
           type,
           onClose,
           onConfirm,
+          isAdmin,
+          setIsAdmin
         }}
       >
         {isLoggedIn && <SideBar />}

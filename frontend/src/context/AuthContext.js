@@ -7,6 +7,7 @@ const AuthContext = createContext({
     isOpen : false,
     message : "",
     type : "",
+    isAdmin : false,
     onClose : () => {},
     onConfirm : () => {},
 

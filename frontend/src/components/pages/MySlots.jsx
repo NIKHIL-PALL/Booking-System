@@ -25,25 +25,48 @@ const MySlots = () => {
   });
   const [isEdit, setIsEdit] = useState(null);
 
-  const handleSlotEdit = async (slotId) => {
-    
-  };
-
-  
-
-  const handleSlotDelete = async (slotIndex) => {
+  const handleSlotEditSave = async (slot) => {
+    console.log(slot);
     const headers = {
       Authorization: `Bearer ${auth.token}`,
       "Content-Type": "application/json",
     };
     axios
-      .delete(`http://localhost:5000/api/slot/${slotIndex}`, { headers })
+      .patch(
+        "http://localhost:5000/api/slot/updateSlotTime",
+        { day : isEdit.day,index : isEdit.index, newStart : slot.start, newEnd : slot.end },
+        { headers }
+      )
+      .then((response) => {
+        console.log("Success");
+        fetchSlots();
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    setIsEdit(null);
+  };
+  const handleSlotCancel = async () => {
+    console.log("canceled");
+    setIsEdit(null);
+  };
+
+  const handleSlotDelete = async (slotId, slotDay) => {
+    const headers = {
+      Authorization: `Bearer ${auth.token}`,
+      "Content-Type": "application/json",
+    };
+    axios
+      .delete(`http://localhost:5000/api/slot/${slotId}/${slotDay}`, {
+        headers,
+      })
       .then((response) => {
         console.log(response.data);
         fetchSlots();
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
       });
   };
   const fetchSlots = async () => {
@@ -82,6 +105,14 @@ const MySlots = () => {
         onClose={(e) => setPopUp((prev) => ({ ...prev, isOpen: false }))}
         onConfirm={(e) => setPopUp((prev) => ({ ...prev, isOpen: false }))}
       />
+      {isEdit && (
+        <EditSlot
+          slot={isEdit}
+          title={"Edit Slot"}
+          onSave={handleSlotEditSave}
+          onCancel={handleSlotCancel}
+        />
+      )}
 
       <div className="p-8 w-2/3 inline-block bg-gray-100 min-h-screen">
         <h1 className="text-3xl font-semibold text-gray-800 mb-8">My Slots</h1>
@@ -92,17 +123,32 @@ const MySlots = () => {
                 {slot.day}
               </h2>
               {slot?.slots?.map((s, index) => (
-                <span className="flex justify-around">
+                <span key={index} className="flex justify-around">
                   <div key={index} className="flex items-center mb-4">
                     {s.start}
                     <span className="text-gray-500 mx-6">to</span>
                     {s.end}
                   </div>
                   <span>
-                  <button className="p-2 m-3 text-white bg-blue-500 rounded-sm" onClick={(e) => setIsEdit(s._id)}>Edit</button>
-                  <button className="p-2 m-3 text-white bg-blue-500 rounded-sm" onClick={(e) => handleSlotDelete(index)}>
-                    Delete
-                  </button>
+                    <button
+                      className="p-2 m-3 text-white bg-blue-500 rounded-sm"
+                      onClick={(e) =>
+                        setIsEdit({
+                          day: slot.day,
+                          index,
+                          start: s.start,
+                          end: s.end,
+                        })
+                      }
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="p-2 m-3 text-white bg-blue-500 rounded-sm"
+                      onClick={(e) => handleSlotDelete(s._id, slot.day)}
+                    >
+                      Delete
+                    </button>
                   </span>
                 </span>
               ))}
