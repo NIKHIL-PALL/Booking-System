@@ -11,6 +11,7 @@ import AuthContext from "./context/AuthContext";
 import { useState } from "react";
 import MessagePopup from "./components/utils/MessagePopup";
 import MySlots from "./components/pages/MySlots";
+import AllSessions from "./components/pages/AllSessions";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -85,6 +86,11 @@ function App() {
             exact
             path="/user-slots"
             Component={MySlots}
+          ></Route>
+          <Route
+            exact
+            path="/all-sessions"
+            Component={AllSessions}
           ></Route>
         </Routes>
       </AuthContext.Provider>

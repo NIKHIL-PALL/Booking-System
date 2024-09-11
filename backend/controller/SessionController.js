@@ -1,4 +1,3 @@
-const { default: mongoose } = require("mongoose");
 const Session = require("../model/Session");
 const getAllSessions = async (req, res) => {
   try {
@@ -45,7 +44,7 @@ const getAllSessionsByUserId = async (req, res) => {
 };
 
 const createSession = async (req, res) => {
-  const { sessionType, userId, start, end } = req.body;
+  const { sessionType, userId, start, end, day } = req.body;
 
   try {
     const session = new Session({
@@ -53,6 +52,7 @@ const createSession = async (req, res) => {
       participants: [userId],
       start,
       end,
+      day
     });
     session.save();
     return res.status(201).json({ message: "Succesfully created session" });

@@ -8,10 +8,10 @@ const Notifications = () => {
         <h2 className="text-lg font-semibold text-gray-700 mb-4">Recent Notifications</h2>
         <ul className="space-y-4">
           <li className="bg-gray-50 p-4 rounded-lg shadow">
-            <p className="text-gray-700">Your session with John Doe has been confirmed for Monday, 10:00 AM.</p>
+            <p className="text-gray-700">Your session with Nikhil has been confirmed for Monday, 10:00 AM.</p>
           </li>
           <li className="bg-gray-50 p-4 rounded-lg shadow">
-            <p className="text-gray-700">Reminder: Your session with Jane Smith is scheduled for Wednesday, 2:00 PM.</p>
+            <p className="text-gray-700">Reminder: Your session with Admin is scheduled for Wednesday, 2:00 PM.</p>
           </li>
         </ul>
       </div>

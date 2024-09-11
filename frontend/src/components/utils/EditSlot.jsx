@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const EditSlot = ({ slot, onSave, onCancel , title}) => {
+const EditSlot = ({ slot, onSave, onCancel ,day, title}) => {
   const [startTime, setStartTime] = useState(slot.start);
   const [endTime, setEndTime] = useState(slot.end);
 
@@ -8,6 +8,7 @@ const EditSlot = ({ slot, onSave, onCancel , title}) => {
     if (onSave) {
       onSave({
         ...slot,
+        day : slot.day,
         start: startTime,
         end: endTime,
       });
@@ -18,6 +19,7 @@ const EditSlot = ({ slot, onSave, onCancel , title}) => {
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-md w-96">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">{slot.day}</h2>
         <div className="flex items-center mb-4">
           <label className="w-1/4 text-gray-600">Start:</label>
           <input

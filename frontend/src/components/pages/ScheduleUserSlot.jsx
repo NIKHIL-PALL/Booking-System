@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 import MessagePopup from "../utils/MessagePopup";
 import EditSlot from "../utils/EditSlot";
+import isIntervalWithinInterval from "../utils/ValidateTime";
+import convertTo12HourFormat from "../utils/TimeFormat";
 
 const ScheduleUserSlot = ({ userId, onConfirm, onClose }) => {
   const [slots, setSlots] = useState([]);
@@ -12,38 +14,48 @@ const ScheduleUserSlot = ({ userId, onConfirm, onClose }) => {
     message: "",
     type: "",
   });
-  const [isEdit, setIsEdit] = useState(null);
+  const [isEditSlot, setIsEditSlot] = useState(null);
 
-  const handleSlotEditSave = async (slot) => {
-    console.log(slot);
+  const handleSessionSave = async ({ start, end }) => {
+    if (
+      !isIntervalWithinInterval(start, end, isEditSlot.start, isEditSlot.end)
+    ) {
+      setIsEditSlot(null);
+      setPopUp({
+        isOpen: true,
+        type: "error",
+        message: "Please select the interval within slot time.",
+      });
+      return;
+    }
+    const sessionType = "One-to-One";
+
     const headers = {
       Authorization: `Bearer ${auth.token}`,
       "Content-Type": "application/json",
     };
     axios
-      .patch(
-        "http://localhost:5000/api/slot/updateSlotTime",
+      .post(
+        "http://localhost:5000/api/session/",
         {
-          day: isEdit.day,
-          index: isEdit.index,
-          newStart: slot.start,
-          newEnd: slot.end,
+          day: isEditSlot.day,
+          sessionType,
+          userId,
+          start,
+          end,
         },
         { headers }
       )
       .then((response) => {
-        console.log("Success");
         fetchSlots();
-        console.log(response.data);
       })
       .catch((err) => {
         console.log(err.message);
       });
-    setIsEdit(null);
+    setIsEditSlot(null);
   };
-  const handleSlotCancel = async () => {
-    console.log("canceled");
-    setIsEdit(null);
+  const handleSessionCancel = async () => {
+    setIsEditSlot(null);
   };
 
   const fetchSlots = async () => {
@@ -55,7 +67,6 @@ const ScheduleUserSlot = ({ userId, onConfirm, onClose }) => {
     await axios
       .get(`http://localhost:5000/api/slot/${userId}`, { headers })
       .then((response) => {
-        console.log(response.data);
         setSlots(response.data);
       })
       .catch((err) => {
@@ -82,12 +93,12 @@ const ScheduleUserSlot = ({ userId, onConfirm, onClose }) => {
           onClose={(e) => setPopUp((prev) => ({ ...prev, isOpen: false }))}
           onConfirm={(e) => setPopUp((prev) => ({ ...prev, isOpen: false }))}
         />
-        {isEdit && (
+        {isEditSlot && (
           <EditSlot
             title={"Schedule time"}
-            slot={isEdit}
-            onSave={handleSlotEditSave}
-            onCancel={handleSlotCancel}
+            slot={isEditSlot}
+            onSave={handleSessionSave}
+            onCancel={handleSessionCancel}
           />
         )}
 
@@ -110,15 +121,15 @@ const ScheduleUserSlot = ({ userId, onConfirm, onClose }) => {
                   {slot?.slots?.map((s, index) => (
                     <span key={index} className="flex justify-around">
                       <div key={index} className="flex items-center mb-4">
-                        {s.start}
+                        {convertTo12HourFormat(s.start)}
                         <span className="text-gray-500 mx-6">to</span>
-                        {s.end}
+                        {convertTo12HourFormat(s.end)}
                       </div>
                       <span>
                         <button
                           className="p-2 m-3 text-white bg-blue-500 rounded-sm"
                           onClick={(e) =>
-                            setIsEdit({
+                            setIsEditSlot({
                               day: slot.day,
                               index,
                               start: s.start,
@@ -134,18 +145,20 @@ const ScheduleUserSlot = ({ userId, onConfirm, onClose }) => {
                 </div>
               ))}
           </div>
-          <button
-            onClick={onClose}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded mr-2"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            OK
-          </button>
+          <div className="my-4">
+            <button
+              onClick={onClose}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded mr-2"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+            >
+              OK
+            </button>
+          </div>
         </div>
       </div>
     </React.Fragment>

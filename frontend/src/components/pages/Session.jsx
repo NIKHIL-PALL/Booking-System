@@ -23,7 +23,6 @@ const ManageSessions = () => {
 
   const handleOnConfirm = async() => {
     setShowUser(false);
-    console.log("confirmed");
   }
 
   useEffect(() => {

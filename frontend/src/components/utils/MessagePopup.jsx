@@ -17,7 +17,7 @@ const MessagePopup = ({ isOpen, message, type, onClose, onConfirm }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-1000">
       <div className={`border-l-4 p-6 rounded-lg shadow-lg ${getPopupStyle()}`}>
         <div className="mb-4">
           <h3 className="text-xl font-semibold">{message}</h3>

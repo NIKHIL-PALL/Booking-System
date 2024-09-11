@@ -4,16 +4,7 @@ import AuthContext from "../../context/AuthContext";
 import MessagePopup from "../utils/MessagePopup";
 import { jwtDecode } from "jwt-decode";
 import EditSlot from "../utils/EditSlot";
-
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+import convertTo12HourFormat from "../utils/TimeFormat";
 
 const MySlots = () => {
   const [slots, setSlots] = useState([]);
@@ -26,7 +17,6 @@ const MySlots = () => {
   const [isEdit, setIsEdit] = useState(null);
 
   const handleSlotEditSave = async (slot) => {
-    console.log(slot);
     const headers = {
       Authorization: `Bearer ${auth.token}`,
       "Content-Type": "application/json",
@@ -34,13 +24,16 @@ const MySlots = () => {
     axios
       .patch(
         "http://localhost:5000/api/slot/updateSlotTime",
-        { day : isEdit.day,index : isEdit.index, newStart : slot.start, newEnd : slot.end },
+        {
+          day: isEdit.day,
+          index: isEdit.index,
+          newStart: slot.start,
+          newEnd: slot.end,
+        },
         { headers }
       )
       .then((response) => {
-        console.log("Success");
         fetchSlots();
-        console.log(response.data);
       })
       .catch((err) => {
         console.log(err.message);
@@ -48,7 +41,6 @@ const MySlots = () => {
     setIsEdit(null);
   };
   const handleSlotCancel = async () => {
-    console.log("canceled");
     setIsEdit(null);
   };
 
@@ -62,7 +54,6 @@ const MySlots = () => {
         headers,
       })
       .then((response) => {
-        console.log(response.data);
         fetchSlots();
       })
       .catch((err) => {
@@ -79,7 +70,6 @@ const MySlots = () => {
     await axios
       .get(`http://localhost:5000/api/slot/${userId}`, { headers })
       .then((response) => {
-        console.log(response.data);
         setSlots(response.data);
       })
       .catch((err) => {
@@ -125,9 +115,9 @@ const MySlots = () => {
               {slot?.slots?.map((s, index) => (
                 <span key={index} className="flex justify-around">
                   <div key={index} className="flex items-center mb-4">
-                    {s.start}
+                    {convertTo12HourFormat(s.start)}
                     <span className="text-gray-500 mx-6">to</span>
-                    {s.end}
+                    {convertTo12HourFormat(s.end)}
                   </div>
                   <span>
                     <button

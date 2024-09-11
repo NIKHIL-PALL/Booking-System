@@ -71,7 +71,7 @@ const UserAvailability = () => {
         type: "error",
         message: "Failed to save availability.",
       });
-      console.error("Error saving availability:", error);
+      console.error(error);
     }
   };
 

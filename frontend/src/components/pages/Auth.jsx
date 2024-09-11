@@ -74,7 +74,6 @@ const AuthPage = () => {
           role,
         })
         .then((response) => {
-          console.log(response);
           setPopUp({
             isOpen: true,
             message: response.data.message,
@@ -89,7 +88,9 @@ const AuthPage = () => {
     const token = localStorage.getItem("token");
 
     if (verifyToken(token)) {
-      auth.login(token, "user");
+      const decodedToken = jwtDecode(token);
+      const isAdmin = decodedToken.role === "admin" ? true : false;
+      auth.login(token, isAdmin, "user");
       navigate("/dashboard");
     } else {
       navigate("/");
@@ -155,15 +156,17 @@ const AuthPage = () => {
                   placeholder="Enter your password"
                   required
                 />
-                <label>
-                  <input
-                    type="checkbox"
-                    className="border rounded-lg px-3 py-2 mt-2 mr-2 text-sm "
-                    checked={isAdmin}
-                    onChange={handleCheckboxChange}
-                  />
-                  Login as Admin
-                </label>
+                {!isLogin && (
+                  <label>
+                    <input
+                      type="checkbox"
+                      className="border rounded-lg px-3 py-2 mt-2 mr-2 text-sm "
+                      checked={isAdmin}
+                      onChange={handleCheckboxChange}
+                    />
+                    Signup as Admin
+                  </label>
+                )}
               </div>
 
               <button
