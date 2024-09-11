@@ -4,20 +4,26 @@ import AuthContext from "../../context/AuthContext.js";
 import { useNavigate } from "react-router-dom";
 import MessagePopup from "../utils/MessagePopup.jsx";
 import { verifyToken } from "../utils/auth.js";
-  
+import { jwtDecode } from "jwt-decode";
+
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [popUp, setPopUp] = useState({
-    isOpen : false,
-    message : "",
-    type : "",
-
-  })
+    isOpen: false,
+    message: "",
+    type: "",
+  });
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Function to handle checkbox change
+  const handleCheckboxChange = (event) => {
+    setIsAdmin(event.target.checked);
+  };
 
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
@@ -27,37 +33,39 @@ const AuthPage = () => {
   };
 
   const handleMessageClose = () => {
-    setPopUp((prev) =>( {
+    setPopUp((prev) => ({
       ...prev,
-      isOpen : false
-    }))
-  }
+      isOpen: false,
+    }));
+  };
 
   const handleMessageConfirm = () => {
-    setPopUp((prev) =>( {
+    setPopUp((prev) => ({
       ...prev,
-      isOpen : false
-    }))
-  }
+      isOpen: false,
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLogin) {
       await axios
         .post("http://localhost:5000/api/user/login", { email, password })
         .then((response) => {
-          auth.login(response.data.token, "userName");
+          const decodedToken = jwtDecode(response.data.token);
+          const isAdmin = decodedToken.role === "admin" ? true : false;
+          auth.login(response.data.token, isAdmin, "userName");
           navigate("/dashboard");
         })
         .catch((err) => {
           console.log(err);
           setPopUp({
-            isOpen : true,
-            message : err.response.data.message,
-            type : "error"
-          })
+            isOpen: true,
+            message: err.response.data.message,
+            type: "error",
+          });
         });
     } else {
-      const role = "user";
+      const role = isAdmin ? "admin" : "user";
       axios
         .post("http://localhost:5000/api/user/signup", {
           email,
@@ -66,31 +74,38 @@ const AuthPage = () => {
           role,
         })
         .then((response) => {
-          console.log(response)
           setPopUp({
-            isOpen : true,
-            message : response.data.message,
-            type : "success"
-          })
+            isOpen: true,
+            message: response.data.message,
+            type: "success",
+          });
           setIsLogin(true);
         })
         .catch((err) => {});
     }
   };
-  useEffect(()=> {
-    const token = localStorage.getItem('token');
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-    if(verifyToken(token)) {
-      auth.login(token,"user");
+    if (verifyToken(token)) {
+      const decodedToken = jwtDecode(token);
+      const isAdmin = decodedToken.role === "admin" ? true : false;
+      auth.login(token, isAdmin, "user");
       navigate("/dashboard");
-    }else{
+    } else {
       navigate("/");
     }
-  },[])
+  }, []);
 
   return (
     <React.Fragment>
-      <MessagePopup isOpen={popUp.isOpen} message={popUp.message} type={popUp.type} onClose={handleMessageClose} onConfirm={handleMessageConfirm}/>
+      <MessagePopup
+        isOpen={popUp.isOpen}
+        message={popUp.message}
+        type={popUp.type}
+        onClose={handleMessageClose}
+        onConfirm={handleMessageConfirm}
+      />
       <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
         <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
           <h1 className="font-bold text-center text-2xl mb-5 text-gray-800">
@@ -141,6 +156,17 @@ const AuthPage = () => {
                   placeholder="Enter your password"
                   required
                 />
+                {!isLogin && (
+                  <label>
+                    <input
+                      type="checkbox"
+                      className="border rounded-lg px-3 py-2 mt-2 mr-2 text-sm "
+                      checked={isAdmin}
+                      onChange={handleCheckboxChange}
+                    />
+                    Signup as Admin
+                  </label>
+                )}
               </div>
 
               <button

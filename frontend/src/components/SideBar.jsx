@@ -5,7 +5,7 @@ import AuthContext from "../context/AuthContext";
 function SideBar() {
   const [isActive, setIsActive] = useState(0);
   const navigate = useNavigate();
-  const auth = useContext(AuthContext)
+  const auth = useContext(AuthContext);
   const handleSideBarClick = (ind) => {
     setIsActive(ind);
   };
@@ -27,17 +27,32 @@ function SideBar() {
               Overview
             </Link>
           </li>
-          <li>
-            <Link
-              onClick={(e) => handleSideBarClick(1)}
-              to="my-schedule"
-              className={`block px-6 py-2 ${
-                isActive === 1 ? "bg-blue-500 text-white" : "text-gray-700 "
-              }  hover:bg-blue-500 hover:text-white rounded-lg`}
-            >
-              My Schedule
-            </Link>
-          </li>
+          {auth.isAdmin ? (
+            <li>
+              <Link
+                onClick={(e) => handleSideBarClick(1)}
+                to="all-sessions"
+                className={`block px-6 py-2 ${
+                  isActive === 1 ? "bg-blue-500 text-white" : "text-gray-700 "
+                }  hover:bg-blue-500 hover:text-white rounded-lg`}
+              >
+                All Sessions
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link
+                onClick={(e) => handleSideBarClick(1)}
+                to="my-schedule"
+                className={`block px-6 py-2 ${
+                  isActive === 1 ? "bg-blue-500 text-white" : "text-gray-700 "
+                }  hover:bg-blue-500 hover:text-white rounded-lg`}
+              >
+                My Schedule
+              </Link>
+            </li>
+          )}
+
           <li>
             <Link
               to="manage-session"
@@ -50,26 +65,30 @@ function SideBar() {
             </Link>
           </li>
           <li>
-            <Link
-              to="user-availability"
-              onClick={(e) => handleSideBarClick(3)}
-              className={`block px-6 py-2 ${
-                isActive === 3 ? "bg-blue-500 text-white" : "text-gray-700 "
-              }  hover:bg-blue-500 hover:text-white rounded-lg`}
-            >
-              Available Slots
-            </Link>
+            {!auth.isAdmin && (
+              <Link
+                to="user-availability"
+                onClick={(e) => handleSideBarClick(3)}
+                className={`block px-6 py-2 ${
+                  isActive === 3 ? "bg-blue-500 text-white" : "text-gray-700 "
+                }  hover:bg-blue-500 hover:text-white rounded-lg`}
+              >
+                Set Slots
+              </Link>
+            )}
           </li>
           <li>
-            <Link
-              to="user-slots"
-              onClick={(e) => handleSideBarClick(4)}
-              className={`block px-6 py-2 ${
-                isActive === 4 ? "bg-blue-500 text-white" : "text-gray-700 "
-              }  hover:bg-blue-500 hover:text-white rounded-lg`}
-            >
-              My Slots
-            </Link>
+            {!auth.isAdmin && (
+              <Link
+                to="user-slots"
+                onClick={(e) => handleSideBarClick(4)}
+                className={`block px-6 py-2 ${
+                  isActive === 4 ? "bg-blue-500 text-white" : "text-gray-700 "
+                }  hover:bg-blue-500 hover:text-white rounded-lg`}
+              >
+                My Slots
+              </Link>
+            )}
           </li>
           <li>
             <Link
@@ -85,9 +104,12 @@ function SideBar() {
           <li>
             <Link
               to="/"
-              onClick={(e) => {auth.logout(); navigate("/")}}
+              onClick={(e) => {
+                auth.logout();
+                navigate("/");
+              }}
               className={`block px-6 py-2 ${
-                isActive === 4 ? "bg-blue-500 text-white" : "text-gray-700 "
+                isActive === 6 ? "bg-blue-500 text-white" : "text-gray-700 "
               }  hover:bg-blue-500 hover:text-white rounded-lg`}
             >
               Logout

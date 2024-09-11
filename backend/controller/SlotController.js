@@ -44,9 +44,9 @@ const createSlot = async(req, res) => {
 
 const updateSlotTime = async (req, res) => {
     const {userId} = res.locals;
-    const {index, newStart, newEnd} = req.body;
+    const {day, index, newStart, newEnd} = req.body;
     try{
-        const availability = await Availability.findOne({userId});
+        const availability = await Availability.findOne({userId, day});
         if(!availability) {
             return res.status(404).json({message : "Invalid userId"});
         }
@@ -63,60 +63,27 @@ const updateSlotTime = async (req, res) => {
     }
 }
 
-const deleteSlotByIndex = async(req, res) => {
-    const {userId} = res.locals;
-    const {index} = req.params;
 
-    try{
-        const slotIndex = parseInt(index);
-        
-        const availableSlots = await Availability.findOne({userId});
-        if(slotIndex < 0 || slotIndex >= availableSlots.slots.length) {
-            return res.status(409).json({message : "Invalid Slot Index"});
-        }
-        if(!availableSlots) {
-            return res.status(404).json({message : "Slot not found"});
-        }
-        else{
-            availableSlots.slots = availableSlots.slots.filter((slot, ind) => ind !== slotIndex);
-            await availableSlots.save();
-            console.log(availableSlots.slots)
-        }
-        return res.status(200).json({message : "Succesfully deleted slot."});
-    }
-    catch(error) {
-        console.log(error);
-        return res.status(500).json({message : error.message});
-    }
-
-}
-const mongoose = require("mongoose");
 
 const deleteSlotById = async (req, res) => {
   const { userId } = res.locals;
-  const { slotId } = req.params; // Get slotId from params
+  const { slotId } = req.params; 
+  const {slotDay} = req.params;
 
   try {
-    // Convert the slotId to a MongoDB ObjectId
-    const objectIdSlotId = mongoose.Types.ObjectId(slotId);
-
-    // Find the availability document for the user
-    const availableSlots = await Availability.findOne({ userId });
+    const availableSlots = await Availability.findOne({ userId, day : slotDay });
 
     if (!availableSlots) {
       return res.status(404).json({ message: "Availability not found" });
     }
-
-    // Find the slot by its ObjectId
     const slotIndex = availableSlots.slots.findIndex(
-      (slot) => slot._id.equals(objectIdSlotId) // Use equals() method for ObjectId comparison
+      (slot) => (slot._id).equals(slotId) 
     );
 
     if (slotIndex === -1) {
       return res.status(409).json({ message: "Slot not found" });
     }
 
-    // Remove the slot from the slots array
     availableSlots.slots.splice(slotIndex, 1);
     await availableSlots.save();
 
@@ -134,6 +101,5 @@ module.exports = {
     createSlot,
     updateSlotTime,
     getSlotsByUserId,
-    deleteSlotByIndex,
     deleteSlotById
 }

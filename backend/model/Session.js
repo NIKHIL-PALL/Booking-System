@@ -16,6 +16,10 @@ const SessionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  day : {
+    type : String,
+    required : true
+  }
 });
 
 const session = mongoose.model("Session", SessionSchema);

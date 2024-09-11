@@ -4,16 +4,7 @@ import AuthContext from "../../context/AuthContext";
 import MessagePopup from "../utils/MessagePopup";
 import { jwtDecode } from "jwt-decode";
 import EditSlot from "../utils/EditSlot";
-
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+import convertTo12HourFormat from "../utils/TimeFormat";
 
 const MySlots = () => {
   const [slots, setSlots] = useState([]);
@@ -25,25 +16,48 @@ const MySlots = () => {
   });
   const [isEdit, setIsEdit] = useState(null);
 
-  const handleSlotEdit = async (slotId) => {
-    
-  };
-
-  
-
-  const handleSlotDelete = async (slotIndex) => {
+  const handleSlotEditSave = async (slot) => {
     const headers = {
       Authorization: `Bearer ${auth.token}`,
       "Content-Type": "application/json",
     };
     axios
-      .delete(`http://localhost:5000/api/slot/${slotIndex}`, { headers })
+      .patch(
+        "http://localhost:5000/api/slot/updateSlotTime",
+        {
+          day: isEdit.day,
+          index: isEdit.index,
+          newStart: slot.start,
+          newEnd: slot.end,
+        },
+        { headers }
+      )
       .then((response) => {
-        console.log(response.data);
         fetchSlots();
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err.message);
+      });
+    setIsEdit(null);
+  };
+  const handleSlotCancel = async () => {
+    setIsEdit(null);
+  };
+
+  const handleSlotDelete = async (slotId, slotDay) => {
+    const headers = {
+      Authorization: `Bearer ${auth.token}`,
+      "Content-Type": "application/json",
+    };
+    axios
+      .delete(`http://localhost:5000/api/slot/${slotId}/${slotDay}`, {
+        headers,
+      })
+      .then((response) => {
+        fetchSlots();
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
   const fetchSlots = async () => {
@@ -56,7 +70,6 @@ const MySlots = () => {
     await axios
       .get(`http://localhost:5000/api/slot/${userId}`, { headers })
       .then((response) => {
-        console.log(response.data);
         setSlots(response.data);
       })
       .catch((err) => {
@@ -82,6 +95,14 @@ const MySlots = () => {
         onClose={(e) => setPopUp((prev) => ({ ...prev, isOpen: false }))}
         onConfirm={(e) => setPopUp((prev) => ({ ...prev, isOpen: false }))}
       />
+      {isEdit && (
+        <EditSlot
+          slot={isEdit}
+          title={"Edit Slot"}
+          onSave={handleSlotEditSave}
+          onCancel={handleSlotCancel}
+        />
+      )}
 
       <div className="p-8 w-2/3 inline-block bg-gray-100 min-h-screen">
         <h1 className="text-3xl font-semibold text-gray-800 mb-8">My Slots</h1>
@@ -92,17 +113,32 @@ const MySlots = () => {
                 {slot.day}
               </h2>
               {slot?.slots?.map((s, index) => (
-                <span className="flex justify-around">
+                <span key={index} className="flex justify-around">
                   <div key={index} className="flex items-center mb-4">
-                    {s.start}
+                    {convertTo12HourFormat(s.start)}
                     <span className="text-gray-500 mx-6">to</span>
-                    {s.end}
+                    {convertTo12HourFormat(s.end)}
                   </div>
                   <span>
-                  <button className="p-2 m-3 text-white bg-blue-500 rounded-sm" onClick={(e) => setIsEdit(s._id)}>Edit</button>
-                  <button className="p-2 m-3 text-white bg-blue-500 rounded-sm" onClick={(e) => handleSlotDelete(index)}>
-                    Delete
-                  </button>
+                    <button
+                      className="p-2 m-3 text-white bg-blue-500 rounded-sm"
+                      onClick={(e) =>
+                        setIsEdit({
+                          day: slot.day,
+                          index,
+                          start: s.start,
+                          end: s.end,
+                        })
+                      }
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="p-2 m-3 text-white bg-blue-500 rounded-sm"
+                      onClick={(e) => handleSlotDelete(s._id, slot.day)}
+                    >
+                      Delete
+                    </button>
                   </span>
                 </span>
               ))}

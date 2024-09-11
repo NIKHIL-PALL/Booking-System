@@ -11,6 +11,7 @@ import AuthContext from "./context/AuthContext";
 import { useState } from "react";
 import MessagePopup from "./components/utils/MessagePopup";
 import MySlots from "./components/pages/MySlots";
+import AllSessions from "./components/pages/AllSessions";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,6 +19,7 @@ function App() {
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [type, setType] = useState("");
   const onClose = () => {
     setIsOpen(false);
@@ -26,11 +28,12 @@ function App() {
   const onConfirm = () => {
     setIsOpen(false);
   };
-  const login = (token, name) => {
+  const login = (token, admin, name) => {
     localStorage.setItem("token", token);
     setIsLoggedIn(true);
     setName(name);
     setUserToken(token);
+    setIsAdmin(admin);
   };
   const logout = () => {
 
@@ -58,6 +61,8 @@ function App() {
           type,
           onClose,
           onConfirm,
+          isAdmin,
+          setIsAdmin
         }}
       >
         {isLoggedIn && <SideBar />}
@@ -81,6 +86,11 @@ function App() {
             exact
             path="/user-slots"
             Component={MySlots}
+          ></Route>
+          <Route
+            exact
+            path="/all-sessions"
+            Component={AllSessions}
           ></Route>
         </Routes>
       </AuthContext.Provider>

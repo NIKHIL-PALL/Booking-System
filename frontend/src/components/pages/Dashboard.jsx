@@ -33,6 +33,7 @@ const Dashboard = () => {
         </div>
 
         {/* Schedule Section */}
+        
         <div className="mt-8 bg-white shadow-md rounded-lg p-6">
           <h3 className="text-lg font-semibold text-gray-700">Your Schedule</h3>
           <p className="text-gray-600 mt-2">Here is your schedule for the week:</p>
